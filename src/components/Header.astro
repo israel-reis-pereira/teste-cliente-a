@@ -1,0 +1,270 @@
+---
+// src/components/Header.astro
+import type { TenantConfig } from '../types/config';
+
+interface Props {
+  config: TenantConfig;
+}
+
+const { config } = Astro.props;
+const { theme, features, links, nomeSite } = config;
+---
+
+<!-- Injetamos os tokens de design do cliente nas variáveis CSS locais -->
+<header 
+  class="header" 
+  style={`--tenant-primary: ${theme.primaryColor}; --tenant-bg: ${theme.navBackgroundColor}; --tenant-text: ${theme.textColor};`}
+  aria-label="Cabeçalho principal do site"
+>
+  <div class="header-container">
+    <a href="/" class="logo" aria-label={`Ir para a página inicial de ${nomeSite}`}>
+      {nomeSite}
+    </a>
+
+    <nav class="nav-menu" id="nav-menu" aria-label="Navegação principal">
+      <ul class="nav-list">
+        {links.map((link) => (
+          <li>
+            <a href={link.url} class="nav-link">
+              {link.nome}
+            </a>
+          </li>
+        ))}
+        {features.hasCtaButton && (
+          <li class="mobile-only-cta">
+            <button class="btn-cta style-mobile-cta">Fale Conosco</button>
+          </li>
+        )}
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <!-- Feature Flag do Tema -->
+      {features.hasThemeToggle && (
+        <button class="btn-theme" id="theme-toggle" aria-label="Alternar entre modo claro e escuro">
+          <svg class="icon-moon" xmlns="http://w3.org" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+          <svg class="icon-sun" xmlns="http://w3.org" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M4.93 4.93l1.41 1.41"></path>
+            <path d="M17.66 17.66l1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M6.34 17.66l-1.41 1.41"></path>
+            <path d="M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+        </button>
+      )}
+      
+      <!-- Feature Flag do CTA Desktop -->
+      {features.hasCtaButton && <button class="btn-cta desktop-only-cta">Fale Conosco</button>}
+      
+      <button 
+        class="btn-mobile-toggle" 
+        id="menu-toggle" 
+        aria-label="Abrir menu de navegação" 
+        aria-expanded="false" 
+        aria-haspopup="true"
+        aria-controls="nav-menu"
+      >
+        <svg class="icon-menu-open" xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg class="icon-menu-close" xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">
+          <line x1="18" x2="6" y1="6" y2="18"></line>
+          <line x1="6" x2="18" y1="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  function setupHeaderActions() {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const currentTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      
+      document.documentElement.setAttribute('data-theme', currentTheme);
+
+      themeToggle.addEventListener('click', () => {
+        const targetTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', targetTheme);
+        localStorage.setItem('theme', targetTheme);
+      });
+    }
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    if (menuToggle && navMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+        navMenu.classList.toggle('is-active');
+        menuToggle.classList.toggle('is-active');
+
+        if (!isExpanded) {
+          menuToggle.setAttribute('aria-label', 'Fechar menu de navegação');
+        } else {
+          menuToggle.setAttribute('aria-label', 'Abrir menu de navegação');
+        }
+      });
+    }
+  }
+
+  setupHeaderActions();
+  document.addEventListener('astro:after-swap', setupHeaderActions);
+</script>
+
+<style>
+  /* Substituímos valores fixos pelas propriedades var() customizadas recebidas via inline style */
+  .header {
+    background-color: var(--tenant-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+  }
+
+  /* Sobrescrita dinâmica controlada para o Dark Mode se ativado */
+  :global([data-theme="dark"]) .header {
+    --tenant-bg: #1f2937 !important;
+    --tenant-text: #f9fafb !important;
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 4.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--tenant-text);
+    text-decoration: none;
+  }
+
+  .nav-menu { display: flex; }
+
+  .nav-list {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: var(--tenant-text);
+    opacity: 0.85;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    opacity: 1;
+    color: var(--tenant-primary);
+  }
+
+  .mobile-only-cta { display: none; }
+  .actions { display: flex; align-items: center; gap: 1rem; }
+
+  .btn-theme, .btn-mobile-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--tenant-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+  }
+
+  .btn-theme:hover, .btn-mobile-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  :global([data-theme="dark"]) .btn-theme:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  :global([data-theme="dark"]) .icon-sun { display: block; }
+  :global([data-theme="dark"]) .icon-moon { display: none; }
+
+  .icon-menu-close { display: none; }
+  .icon-menu-open { display: block; }
+  .btn-mobile-toggle.is-active .icon-menu-close { display: block; }
+  .btn-mobile-toggle.is-active .icon-menu-open { display: none; }
+  .btn-mobile-toggle { display: none; }
+
+  .btn-cta {
+    background-color: var(--tenant-primary);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+  }
+
+  .btn-cta:hover {
+    filter: brightness(0.9);
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only-cta { display: none; }
+    .btn-mobile-toggle { display: flex; }
+
+    .nav-menu {
+      display: block;
+      position: absolute;
+      top: 4.5rem;
+      left: 0;
+      width: 100%;
+      background-color: var(--tenant-bg);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      visibility: hidden;
+      transition: max-height 0.3s ease-in-out, opacity 0.2s ease, visibility 0.2s;
+    }
+
+    .nav-menu.is-active {
+      max-height: 400px;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-list {
+      flex-direction: column;
+      padding: 1.5rem;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .nav-link { width: 100%; font-size: 1.1rem; }
+    .mobile-only-cta { display: block; width: 100%; margin-top: 0.5rem; }
+    .style-mobile-cta { width: 100%; text-align: center; padding: 0.75rem; }
+  }
+</style>

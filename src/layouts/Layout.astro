@@ -1,0 +1,44 @@
+---
+// src/layouts/Layout.astro
+import Header from '../components/Header.astro';
+import { tenants } from '../constants/tenants';
+
+interface Props {
+  title: string;
+  tenantId: "empresa-a" | "empresa-b"; // Tipagem estrita aceitando apenas clientes reais cadastrados
+}
+
+const { title, tenantId } = Astro.props;
+
+// Captura dinamicamente as configurações do cliente solicitado
+const currentTenant = tenants[tenantId];
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | {currentTenant.nomeSite}</title>
+  </head>
+  <body>
+    <!-- Passamos o objeto inteiro do cliente dinamicamente para o Header -->
+    <Header config={currentTenant} />
+    
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, sans-serif;
+    background-color: #f9fafb;
+    color: #111827;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  [data-theme="dark"] body {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+</style>
