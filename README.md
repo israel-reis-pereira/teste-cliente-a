@@ -46,6 +46,7 @@
 
   ## Estrutura atual
 
+  ```text
   src/
   ├── assets/              # Assets herdados do starter do Astro
   ├── components/
@@ -67,18 +68,16 @@
   public/
   ├── favicon.ico
   └── favicon.svg
+  ```
 
   ## Rotas
 
-   Rota         Página                      Estado
-  ━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   /            src/pages/index.astro       Conteúdo inicial estático
-  ───────────  ──────────────────────────  ───────────────────────────
-   /sobre       src/pages/sobre.astro       Conteúdo estático
-  ───────────  ──────────────────────────  ───────────────────────────
-   /servicos    src/pages/servicos.astro    Conteúdo estático
-  ───────────  ──────────────────────────  ───────────────────────────
-   /contato     src/pages/contato.astro     Conteúdo estático
+  | Rota | Página | Estado |
+  |---|---|---|
+  | `/` | `src/pages/index.astro` | Conteúdo inicial estático |
+  | `/sobre` | `src/pages/sobre.astro` | Conteúdo estático |
+  | `/servicos` | `src/pages/servicos.astro` | Conteúdo estático |
+  | `/contato` | `src/pages/contato.astro` | Conteúdo estático |
 
   ## Componentes
 
