@@ -1,0 +1,135 @@
+.hero-grid {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+}
+
+.service-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.facility-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.testimonial-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.inclusion-inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+.contact-grid {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.75fr);
+}
+
+.footer-grid {
+  grid-template-columns: minmax(0, 1.35fr) repeat(3, minmax(0, 1fr));
+}
+
+.service-card,
+.facility-card,
+.testimonial-card,
+.contact-details,
+.hours {
+  min-width: 0;
+}
+
+.service-card p,
+.facility-card p,
+.testimonial-card blockquote,
+.contact-details address,
+.hours dd {
+  overflow-wrap: anywhere;
+}
+
+.footer-grid address,
+.footer-grid a,
+.footer-grid span {
+  overflow-wrap: anywhere;
+}
+
+.facility-icon svg {
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.text-link svg {
+  display: inline-block;
+  height: 1em;
+  margin-left: 0.25rem;
+  vertical-align: -0.14em;
+  width: 1em;
+}
+
+.service-card,
+.facility-card,
+.testimonial-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.testimonial-card time {
+  color: var(--muted);
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.9rem;
+}
+
+@media (hover: hover) {
+  .service-card:hover,
+  .facility-card:hover,
+  .testimonial-card:hover {
+    border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+    box-shadow: 0 12px 28px rgba(25, 55, 48, 0.1);
+    transform: translateY(-3px);
+  }
+
+  .text-link:hover {
+    color: var(--brand);
+  }
+}
+
+@media (max-width: 900px) {
+  .service-grid,
+  .facility-grid,
+  .testimonial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .hero-grid,
+  .inclusion-inner,
+  .contact-grid,
+  .service-grid,
+  .facility-grid,
+  .testimonial-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .service-card,
+  .facility-card,
+  .testimonial-card {
+    padding: 1.25rem;
+  }
+
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-actions .button {
+    width: 100%;
+  }
+
+  .footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
